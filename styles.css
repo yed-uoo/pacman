@@ -21,6 +21,10 @@ body {
   text-align: center;
 }
 
+.landing-wrap {
+  width: min(92vw, 520px);
+}
+
 h1 {
   margin: 0 0 10px;
   font-weight: 800;
@@ -58,4 +62,98 @@ canvas {
   margin-top: 10px;
   opacity: 0.9;
   font-size: 0.95rem;
+}
+
+.play-again-btn {
+  margin-top: 12px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.26);
+  background: rgba(255, 225, 107, 0.12);
+  color: #ffe16b;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+
+.play-again-btn:hover {
+  background: rgba(255, 225, 107, 0.2);
+}
+
+.landing-card {
+  margin-top: 14px;
+  padding: 28px 20px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(4px);
+}
+
+.landing-text {
+  margin: 0 0 18px;
+  font-size: 1.05rem;
+  opacity: 0.95;
+}
+
+.play-btn {
+  display: inline-block;
+  padding: 12px 26px;
+  border-radius: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.26);
+  background: rgba(255, 225, 107, 0.12);
+  color: #ffe16b;
+  text-decoration: none;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+}
+
+.play-btn:hover {
+  background: rgba(255, 225, 107, 0.2);
+}
+
+.difficulty-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.difficulty-btn {
+  display: inline-block;
+  padding: 12px 22px;
+  border-radius: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.26);
+  text-decoration: none;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  transition: all 0.2s ease;
+}
+
+.difficulty-btn.easy {
+  background: rgba(140, 255, 155, 0.12);
+  color: #8cff9b;
+  border-color: rgba(140, 255, 155, 0.3);
+}
+
+.difficulty-btn.easy:hover {
+  background: rgba(140, 255, 155, 0.22);
+}
+
+.difficulty-btn.medium {
+  background: rgba(255, 225, 107, 0.12);
+  color: #ffe16b;
+  border-color: rgba(255, 225, 107, 0.3);
+}
+
+.difficulty-btn.medium:hover {
+  background: rgba(255, 225, 107, 0.22);
+}
+
+.difficulty-btn.hard {
+  background: rgba(255, 77, 77, 0.12);
+  color: #ff8f8f;
+  border-color: rgba(255, 77, 77, 0.3);
+}
+
+.difficulty-btn.hard:hover {
+  background: rgba(255, 77, 77, 0.22);
 }

@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pac-Man (Computer Graphics Demo)</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="game-wrap">
+      <h1>Pac-Man</h1>
+      <div class="hud" id="hud">
+        <span id="score">Score: 0</span>
+        <span id="lives">Lives: 3</span>
+        <span id="state">Press Arrow Keys to Start</span>
+      </div>
+      <canvas id="gameCanvas" width="560" height="620" aria-label="Pac-Man game canvas"></canvas>
+      <button id="playAgainBtn" class="play-again-btn" hidden>Play Again</button>
+      <p class="help">Controls: Arrow keys or WASD • Refresh to restart</p>
+    </main>
+    <script src="game.js"></script>
+  </body>
+</html>

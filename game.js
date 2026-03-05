@@ -4,6 +4,7 @@ const ctx = canvas.getContext('2d');
 const scoreEl = document.getElementById('score');
 const livesEl = document.getElementById('lives');
 const stateEl = document.getElementById('state');
+const playAgainBtn = document.getElementById('playAgainBtn');
 
 const TILE = 28;
 const HUD_HEIGHT = 60;
@@ -28,7 +29,7 @@ const layout = [
   '######.##..##.######',
   '#....#...GG...#....#',
   '#.##.#.######.#.##.#',
-  '#....#....P...#....#',
+  '#.........P........#',
   '######.##..##.######',
   '#......##..##......#',
   '#.####.######.####.#',
@@ -42,6 +43,14 @@ const layout = [
 
 const map = layout.map((row) => row.split(''));
 
+function tileCenterX(tx) {
+  return tx * TILE + TILE / 2;
+}
+
+function tileCenterY(ty) {
+  return HUD_HEIGHT + ty * TILE + TILE / 2;
+}
+
 let pelletsLeft = 0;
 for (let y = 0; y < ROWS; y++) {
   for (let x = 0; x < COLS; x++) {
@@ -50,8 +59,8 @@ for (let y = 0; y < ROWS; y++) {
 }
 
 const player = {
-  x: 10 * TILE + TILE / 2,
-  y: 10 * TILE + TILE / 2,
+  x: tileCenterX(10),
+  y: tileCenterY(10),
   radius: TILE * 0.4,
   speed: 130,
   dir: { ...DIRS.left },
@@ -67,11 +76,23 @@ const ghostStarts = [
   { x: 11, y: 8, color: '#5bd3ff' }
 ];
 
+// Get difficulty from URL parameter
+const urlParams = new URLSearchParams(window.location.search);
+const difficulty = urlParams.get('difficulty') || 'medium';
+
+// Set ghost speed multiplier based on difficulty
+let speedMultiplier = 1;
+if (difficulty === 'easy') {
+  speedMultiplier = 0.5;  // Very slow
+} else if (difficulty === 'hard') {
+  speedMultiplier = 1.4;  // Fast
+}
+
 const ghosts = ghostStarts.map((g, index) => ({
-  x: g.x * TILE + TILE / 2,
-  y: g.y * TILE + TILE / 2,
+  x: tileCenterX(g.x),
+  y: tileCenterY(g.y),
   radius: TILE * 0.38,
-  speed: 90 + index * 8,
+  speed: (90 + index * 8) * speedMultiplier,
   dir: [DIRS.left, DIRS.right, DIRS.up][index],
   color: g.color
 }));
@@ -202,6 +223,7 @@ function drawGhost(ghost) {
 function drawHud() {
   scoreEl.textContent = `Score: ${player.score}`;
   livesEl.textContent = `Lives: ${player.lives}`;
+  if (playAgainBtn) playAgainBtn.hidden = !gameOver;
 
   if (gameOver) {
     stateEl.textContent = win ? 'You Win! Refresh to replay' : 'Game Over! Refresh to retry';
@@ -235,14 +257,14 @@ function eatPellet() {
 }
 
 function resetPositions() {
-  player.x = 10 * TILE + TILE / 2;
-  player.y = 10 * TILE + TILE / 2;
+  player.x = tileCenterX(10);
+  player.y = tileCenterY(10);
   player.dir = { ...DIRS.left };
   player.nextDir = { ...DIRS.left };
 
   ghosts.forEach((ghost, i) => {
-    ghost.x = ghostStarts[i].x * TILE + TILE / 2;
-    ghost.y = ghostStarts[i].y * TILE + TILE / 2;
+    ghost.x = tileCenterX(ghostStarts[i].x);
+    ghost.y = tileCenterY(ghostStarts[i].y);
     ghost.dir = [DIRS.left, DIRS.right, DIRS.up][i];
   });
 }
@@ -289,7 +311,11 @@ function chooseGhostDir(ghost) {
 }
 
 function updateGhosts(dt) {
+  let playerHitThisFrame = false;
+
   ghosts.forEach((ghost) => {
+    if (playerHitThisFrame || gameOver) return;
+
     const centerX = Math.abs((ghost.x - TILE / 2) % TILE) < 2;
     const centerY = Math.abs((ghost.y - HUD_HEIGHT - TILE / 2) % TILE) < 2;
 
@@ -307,6 +333,7 @@ function updateGhosts(dt) {
 
     const hit = Math.hypot(player.x - ghost.x, player.y - ghost.y) < player.radius + ghost.radius - 4;
     if (hit) {
+      playerHitThisFrame = true;
       player.lives -= 1;
       if (player.lives <= 0) {
         gameOver = true;
@@ -369,17 +396,38 @@ function frame(time) {
 
 function setDirectionByKey(key) {
   const normalized = key.toLowerCase();
-  if (normalized === 'arrowleft' || normalized === 'a') player.nextDir = DIRS.left;
-  if (normalized === 'arrowright' || normalized === 'd') player.nextDir = DIRS.right;
-  if (normalized === 'arrowup' || normalized === 'w') player.nextDir = DIRS.up;
-  if (normalized === 'arrowdown' || normalized === 's') player.nextDir = DIRS.down;
+  let moved = false;
 
-  if (!running && !gameOver) running = true;
+  if (normalized === 'arrowleft' || normalized === 'a') player.nextDir = DIRS.left;
+  if (normalized === 'arrowleft' || normalized === 'a') moved = true;
+  if (normalized === 'arrowright' || normalized === 'd') {
+    player.nextDir = DIRS.right;
+    moved = true;
+  }
+  if (normalized === 'arrowup' || normalized === 'w') {
+    player.nextDir = DIRS.up;
+    moved = true;
+  }
+  if (normalized === 'arrowdown' || normalized === 's') {
+    player.nextDir = DIRS.down;
+    moved = true;
+  }
+
+  if (!running && !gameOver && moved) running = true;
+
+  return moved;
 }
 
 window.addEventListener('keydown', (e) => {
-  setDirectionByKey(e.key);
+  const moved = setDirectionByKey(e.key);
+  if (moved) e.preventDefault();
 });
+
+if (playAgainBtn) {
+  playAgainBtn.addEventListener('click', () => {
+    window.location.reload();
+  });
+}
 
 function init() {
   canvas.width = COLS * TILE;
