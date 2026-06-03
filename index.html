@@ -3,20 +3,62 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pac-Man</title>
+    <meta name="description" content="A classic Pac-Man arcade game built with vanilla JavaScript, HTML5 Canvas, and ES6 modules. Features BFS ghost AI, state management, and localStorage high scores." />
+    <title>Pac-Man — Arcade Game</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <main class="game-wrap landing-wrap">
+    <main class="game-wrap">
       <h1>Pac-Man</h1>
-      <div class="landing-card">
-        <p class="landing-text">Choose Difficulty</p>
-        <div class="difficulty-buttons">
-          <a class="difficulty-btn easy" href="game.html?difficulty=easy">Easy</a>
-          <a class="difficulty-btn medium" href="game.html?difficulty=medium">Medium</a>
-          <a class="difficulty-btn hard" href="game.html?difficulty=hard">Hard</a>
+
+      <!-- ── HUD ────────────────────────────────────────── -->
+      <div class="hud" id="hud">
+        <span id="score">Score: 0</span>
+        <span id="high-score">High Score: 0</span>
+      </div>
+
+      <!-- ── Canvas + Overlays ──────────────────────────── -->
+      <div class="canvas-container">
+        <canvas
+          id="gameCanvas"
+          width="560"
+          height="560"
+          aria-label="Pac-Man game canvas"
+        ></canvas>
+
+        <!-- Start Screen Overlay -->
+        <div id="overlay-start" class="overlay">
+          <div class="overlay-content">
+            <h2 class="overlay-title overlay-title--yellow">PAC-MAN</h2>
+            <p class="overlay-subtitle">Eat all the dots. Avoid the ghosts.</p>
+            <button id="btn-start" class="overlay-btn">Start Game</button>
+            <p class="overlay-hint">or press <kbd>Enter</kbd></p>
+          </div>
+        </div>
+
+        <!-- Game Over Overlay -->
+        <div id="overlay-gameover" class="overlay hidden">
+          <div class="overlay-content">
+            <h2 class="overlay-title overlay-title--red">GAME OVER</h2>
+            <p class="overlay-subtitle">Final Score: <span id="final-score">0</span></p>
+            <button id="btn-restart-go" class="overlay-btn">Play Again</button>
+          </div>
+        </div>
+
+        <!-- Win Overlay -->
+        <div id="overlay-win" class="overlay hidden">
+          <div class="overlay-content">
+            <h2 class="overlay-title overlay-title--green">YOU WIN!</h2>
+            <p class="overlay-subtitle">Score: <span id="win-score">0</span></p>
+            <button id="btn-restart-win" class="overlay-btn">Play Again</button>
+          </div>
         </div>
       </div>
+
+      <p class="help">Controls: Arrow keys or WASD &bull; Press Enter to start</p>
     </main>
+
+    <!-- ES6 module entry point -->
+    <script type="module" src="js/game.js"></script>
   </body>
 </html>
